@@ -3,13 +3,10 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
+Controller2D controller;
+
 	// Use this for initialization
 	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+		controller = GetComponent<Controller2D>();
 	}
 }
