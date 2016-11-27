@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent (typeof(Controller2D))]
 public class Player : MonoBehaviour {
 
-float gravity = -20f;
+float gravity = -2f;
 float moveSpeed = 6f;
 Vector3 velocity;
 Controller2D controller;

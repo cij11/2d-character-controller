@@ -53,7 +53,7 @@ public class Controller2D : MonoBehaviour {
 			Vector3 rayOrigin = (directionX == -1)?raycastOrigins.bottomLeft:raycastOrigins.bottomRight;
 			rayOrigin += Vector3.up * (horizontalRaySpacing * i);
 			RaycastHit hit;
-			bool isHit = Physics.Raycast(rayOrigin, Vector3.up *directionX, out hit, rayLength, collisionMask);
+			bool isHit = Physics.Raycast(rayOrigin, Vector3.right *directionX, out hit, rayLength, collisionMask);
 
 			Debug.DrawRay(rayOrigin, Vector3.right * directionX * rayLength, Color.red);
 			//if there is a hit, move the character only enough to come
