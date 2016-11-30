@@ -12,6 +12,19 @@ public class Controller2D : MonoBehaviour {
 	float horizontalRaySpacing;
 	float verticalRaySpacing;
 
+	//Note: Gravity is local to the player. So, the direction of gravity is altered
+	//by rotating the player. If the player is aligned with the world axis, gravity is straight
+	//down. If the player is aligned so that their feet always point towards the center of a 
+	//sphere, then gravity will point towards the center of that sphere.
+	//Wall running and antigravity can be simulated by having the player oriented to that surface.
+
+	//This implementation differs from Sebastian Lagues primarily in that:
+	//1. Coordinates are taken with respect to the transform, rather than the world
+	//2. This is a '2.5d' implementation. Eg, 3d coordinates and geometry is used throughout,
+	//but confined to a 2d plane.
+	//3. A rigid body component kinematic trigger is added to the character. This allows trigger
+	//collision events to be sent, in addition to the raycast collision system.
+
 	BoxCollider collider;
 	RaycastOrigins raycastOrigins;
 	public CollisionInfo collisions;
@@ -29,12 +42,12 @@ public class Controller2D : MonoBehaviour {
 
 		for (int i = 0; i < verticalRayCount; i++){
 			Vector3 rayOrigin = (directionY == -1)?raycastOrigins.bottomLeft:raycastOrigins.topLeft;
-			rayOrigin += Vector3.right * (verticalRaySpacing * i + velocity.x);
+			rayOrigin += collider.transform.right * (verticalRaySpacing * i + velocity.x);
 			RaycastHit hit;
 			bool isHit = Physics.Raycast(rayOrigin, Vector3.up *directionY, out hit, rayLength, collisionMask);
 
 
-			Debug.DrawRay(rayOrigin, Vector3.up * directionY * rayLength, Color.red);
+			Debug.DrawRay(rayOrigin, collider.transform.up * directionY * rayLength, Color.red);
 			
 			//if there is a hit, move the character only enough to come
 			//into contact with the 
@@ -55,11 +68,11 @@ public class Controller2D : MonoBehaviour {
 
 		for (int i = 0; i < horizontalRayCount; i++){
 			Vector3 rayOrigin = (directionX == -1)?raycastOrigins.bottomLeft:raycastOrigins.bottomRight;
-			rayOrigin += Vector3.up * (horizontalRaySpacing * i);
+			rayOrigin += collider.transform.up * (horizontalRaySpacing * i);
 			RaycastHit hit;
 			bool isHit = Physics.Raycast(rayOrigin, Vector3.right *directionX, out hit, rayLength, collisionMask);
 
-			Debug.DrawRay(rayOrigin, Vector3.right * directionX * rayLength, Color.red);
+			Debug.DrawRay(rayOrigin, collider.transform.right * directionX * rayLength, Color.red);
 			//if there is a hit, move the character only enough to come
 			//into contact with the 
 			if(isHit){
@@ -119,6 +132,8 @@ public class Controller2D : MonoBehaviour {
 		if (velocity.x != 0){
 			HorizontalCollision(ref velocity);
 		}
+		//note that this occurs in local space. Eg, if the player is rotated 45 degrees and is falling
+		//''straight down'', they will fall on a 45 degree slope.
 		transform.Translate(velocity);
 	}
 }
